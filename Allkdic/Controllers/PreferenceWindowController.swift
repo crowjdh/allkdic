@@ -22,8 +22,6 @@
 
 import Cocoa
 
-import SimpleCocoaAnalytics
-
 class PreferenceWindowController: WindowController, NSTextFieldDelegate {
 
   var keyBinding: KeyBinding?
@@ -131,7 +129,7 @@ class PreferenceWindowController: WindowController, NSTextFieldDelegate {
     
     self.autostartCheckbox.target = self
     self.autostartCheckbox.title = ""
-    self.autostartCheckbox.state = LoginItem.enabled ? NSOnState : NSOffState
+    self.autostartCheckbox.state = LoginItem.enabled ? NSControl.StateValue.on : NSControl.StateValue.off
     self.autostartCheckbox.action = #selector(toggleAutostart(_:))
     self.autostartCheckbox.setButtonType(.switch)
     self.autostartCheckbox.snp.makeConstraints { make in
@@ -153,8 +151,6 @@ class PreferenceWindowController: WindowController, NSTextFieldDelegate {
     let keyBindingData = UserDefaults.standard.dictionary(forKey: UserDefaultsKey.hotKey)
     let keyBinding = KeyBinding(dictionary: keyBindingData)
     self.handleKeyBinding(keyBinding)
-
-    AnalyticsHelper.sharedInstance().recordScreen(withName: "PreferenceWindow")
   }
 
   func windowShouldClose(_ sender: AnyObject?) -> Bool {
@@ -162,7 +158,7 @@ class PreferenceWindowController: WindowController, NSTextFieldDelegate {
     return true
   }
 
-  override func controlTextDidChange(_ notification: Notification) {
+  func controlTextDidChange(_ notification: Notification) {
     if notification.object as? NSTextField == self.hotKeyTextField {
       self.hotKeyTextField.stringValue = ""
     }
@@ -201,16 +197,9 @@ class PreferenceWindowController: WindowController, NSTextFieldDelegate {
     UserDefaults.standard.synchronize()
 
     PopoverController.sharedInstance().contentViewController.updateHotKeyLabel()
-
-    AnalyticsHelper.sharedInstance().recordCachedEvent(
-      withCategory: AnalyticsCategory.preference,
-      action: AnalyticsAction.updateHotKey,
-      label: nil,
-      value: nil
-    )
   }
   
-  func toggleAutostart(_ sender: AnyObject) -> Void {
-    LoginItem.setEnabled(enabled: self.autostartCheckbox.state == NSOnState)
+  @objc func toggleAutostart(_ sender: AnyObject) -> Void {
+    LoginItem.setEnabled(enabled: self.autostartCheckbox.state == NSControl.StateValue.on)
   }
 }

@@ -75,14 +75,6 @@ public enum DictionaryType: String {
     }
   }
 
-  public var URLPattern: String {
-    switch self {
-    case .Naver: return "[a-z]+(?=\\.naver\\.com)"
-    case .Daum: return "(?<=[?&]dic=)[a-z]+"
-    case .NaverMobile: return "(?<=m\\.)[a-z]+(?=\\.naver\\.com)"
-    }
-  }
-
   public var inputFocusingScript: String {
     switch self {
     case .Naver: return "ac_input.focus(); ac_input.select()"
