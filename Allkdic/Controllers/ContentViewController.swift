@@ -164,7 +164,7 @@ open class ContentViewController: NSViewController {
     switch key {
     case (false, false, false, false, 53):
       // ESC
-      PopoverController.sharedInstance().close()
+      PopoverController.sharedInstance().close(hide: true)
       break
 
     case (_, false, false, true, let index) where 18...(18 + DictionaryType.allTypes.count) ~= index:

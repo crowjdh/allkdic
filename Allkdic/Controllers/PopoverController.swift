@@ -31,6 +31,7 @@ open class PopoverController: NSObject {
     return self.statusItem.value(forKey: "_button") as! NSButton
   }
   fileprivate let popover = NSPopover()
+  fileprivate var shouldHidePopover = false
 
   @objc internal let contentViewController = ContentViewController()
   internal let preferenceWindowController = PreferenceWindowController()
@@ -55,8 +56,12 @@ open class PopoverController: NSObject {
     self.statusButton.setButtonType(.pushOnPushOff)
 
     self.popover.contentViewController = self.contentViewController
+    self.popover.delegate = self
 
-    NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseUp, .leftMouseDown]) { _ in
+    NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseUp, .leftMouseDown]) { event in
+      if let window = NSApp.window(withWindowNumber: event.windowNumber), type(of: window).className() == "_NSPopoverWindow" {
+        return
+      }
       self.close()
     }
 
@@ -68,7 +73,7 @@ open class PopoverController: NSObject {
 
   @objc open func open() {
     if self.popover.isShown {
-      self.close()
+      self.close(hide: true)
       return
     }
 
@@ -80,10 +85,11 @@ open class PopoverController: NSObject {
     self.contentViewController.focusOnTextArea()
   }
 
-  open func close() {
+    open func close(hide: Bool = false) {
     if !self.popover.isShown {
       return
     }
+    shouldHidePopover = hide
 
     self.statusButton.state = NSControl.StateValue.off
     self.popover.close()
@@ -100,4 +106,13 @@ open class PopoverController: NSObject {
       }
     }
   }
+}
+
+extension PopoverController: NSPopoverDelegate {
+    public func popoverDidClose(_ notification: Notification) {
+        if shouldHidePopover {
+            NSApp.hide(nil)
+            shouldHidePopover = false
+        }
+    }
 }
