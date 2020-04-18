@@ -36,6 +36,7 @@ open class ContentViewController: NSViewController {
 
   override open func loadView() {
     self.view = NSView(frame: CGRect(x: 0, y: 0, width: 405, height: 566))
+    self.preferredContentSize = DictionaryType.selectedDictionary.popoverSize
     self.view.autoresizingMask = NSView.AutoresizingMask()
     self.view.appearance = NSAppearance(named: NSAppearance.Name.aqua)
 
@@ -214,7 +215,8 @@ open class ContentViewController: NSViewController {
       menuItem.state = NSControl.StateValue.off
     }
     self.dictionaryMenu.item(withTag: index)?.state = NSControl.StateValue.on
-
+    self.preferredContentSize = DictionaryType.selectedDictionary.popoverSize
+    
     self.navigateToMain()
   }
 

@@ -27,10 +27,11 @@ public enum DictionaryType: String {
   case Naver = "Naver"
   case Daum = "Daum"
   case NaverMobile = "NaverMobile"
+  case DevDocs = "DevDocs"
 
 
   static var allTypes: [DictionaryType] {
-    return [.Naver, .Daum, .NaverMobile]
+    return [.Naver, .Daum, .NaverMobile, .DevDocs]
   }
 
   static var selectedDictionary: DictionaryType {
@@ -64,6 +65,7 @@ public enum DictionaryType: String {
     case .Naver: return gettext("naver_dictionary")
     case .Daum: return gettext("daum_dictionary")
     case .NaverMobile: return gettext("naver_mobile_dictionary")
+    case .DevDocs: return gettext("devdocs_dictonary")
     }
   }
 
@@ -72,6 +74,7 @@ public enum DictionaryType: String {
     case .Naver: return "http://endic.naver.com/popManager.nhn?m=miniPopMain"
     case .Daum: return "http://small.dic.daum.net/"
     case .NaverMobile: return "http://m.dic.naver.com/"
+    case .DevDocs: return gettext("https://devdocs.io")
     }
   }
 
@@ -80,7 +83,15 @@ public enum DictionaryType: String {
     case .Naver: return "ac_input.focus(); ac_input.select()"
     case .Daum: return "q.focus(); q.select()"
     case .NaverMobile: return "ac_input.focus(); ac_input.select()"
+    case .DevDocs: return "q.focus(); q.select()"
     }
   }
+    
+    public var popoverSize: CGSize {
+      switch self {
+      case .DevDocs: return CGSize(width: 600, height: 850)
+      default: return CGSize(width: 405, height: 566)
+      }
+    }
 
 }
